@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+
+body,
+html {
+    @apply h-full;
+}
+
+#__next {
+    @apply grid h-full grid-cols-1;
+}
