@@ -1,4 +1,5 @@
 export const ROUTE = Object.freeze({
   home: '/',
-  auth: '/auth',
+  login: '/login',
+  dashboard: '/dashboard',
 });
