@@ -2,18 +2,18 @@ import type { ThunkAction, Action } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector, useStore } from 'react-redux';
+import { api } from '../api';
 
 export function makeStore() {
   return configureStore({
     reducer: {
-    //   [appSlice.name]: appSlice.reducer,
-    //   [authApi.reducerPath]: authApi.reducer,
+      [api.reducerPath]: api.reducer,
     },
     middleware: gDM =>
       gDM({
         serializableCheck: false
       })
-        // .concat(authApi.middleware)
+        .concat(api.middleware)
   });
 }
 
