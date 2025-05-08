@@ -19,7 +19,15 @@ export const api = createApi({
         body,
       }),
     }),
+    getOrders: builder.query<Types.GetOrdersOutput, Types.GetOrdersInput>({
+      query: (params) => ({
+        url: '/api/v1/orders',
+        method: 'GET',
+        params,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = api;
+export const { useLoginMutation, useGetOrdersQuery, useLazyGetOrdersQuery } =
+  api;
