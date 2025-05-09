@@ -12,6 +12,7 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.1",
     "classnames": "^2.5.1",
+    "moment": "^2.30.1",
     "next": "15.3.2",
     "next-http-proxy-middleware": "^1.2.7",
     "react": "^19.0.0",

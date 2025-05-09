@@ -1,3 +1,3 @@
-import { TasksScreen } from '@/screens/Tasks';
+import { OrdersScreen } from '@/screens/Orders';
 
-export default TasksScreen;
+export default OrdersScreen;

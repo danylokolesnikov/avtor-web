@@ -1,5 +1,6 @@
-import { useLoginMutation } from '@/shared/api';
-import { LoginInput } from '@/shared/api/types';
+import { useLoginMutation } from '@/shared/api/auth';
+import type { LoginInput } from '@/shared/api/auth/auth-types';
+import { Button } from '@/shared/components/Button';
 import { ROUTE } from '@/shared/helpers/routers';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -11,11 +12,12 @@ const loginSchema = z.object({
 });
 
 export const LoginScreen: React.FC = () => {
-  const [login] = useLoginMutation();
+  const [login, { isLoading, isSuccess }] = useLoginMutation();
   const { push } = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoading) return;
 
     const form = new FormData(e.currentTarget);
 
@@ -45,11 +47,13 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-full">
+    <div className="flex items-center justify-center h-full">
       <form onSubmit={handleSubmit} className="grid gap-2">
         <input name="username" type="text" required />
         <input name="password" type="password" required />
-        <button type="submit">Увійти</button>
+        <Button type="submit" isLoading={isLoading} disabled={isSuccess}>
+          Увійти
+        </Button>
       </form>
     </div>
   );
