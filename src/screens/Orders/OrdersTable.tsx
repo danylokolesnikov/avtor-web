@@ -115,7 +115,7 @@ const colsPending: Array<TableColCell<OrderEntity, Context>> = [
   },
   {
     label: 'Наступна оплата',
-    render: ({ payment }) => payment?.number,
+    render: ({ payment }) => payment?.amount,
   },
   {
     label: 'Тип оплати',
