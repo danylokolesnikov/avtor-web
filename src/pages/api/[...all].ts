@@ -1,11 +1,9 @@
-/* eslint-disable import/no-anonymous-default-export */
 import { IncomingMessage, ServerResponse } from 'http';
 import httpProxy from 'http-proxy';
 import { parse } from 'url';
 
 export const config = {
   api: {
-    // Enable `externalResolver` option in Next.js
     externalResolver: true,
     bodyParser: false,
   },
@@ -28,7 +26,10 @@ export default (req: IncomingMessage, res: ServerResponse<IncomingMessage>) =>
         if (cookies) {
           const currentHost = req.headers.host?.split(':')[0];
           proxyRes.headers['set-cookie'] = cookies.map((cookie: string) =>
-            cookie.replace(/Domain=[^;]+/i, `Domain=.${currentHost || 'localhost'}`),
+            cookie.replace(
+              /Domain=[^;]+/i,
+              `Domain=.${currentHost || 'localhost'}`,
+            ),
           );
         }
         resolve(proxyRes);
