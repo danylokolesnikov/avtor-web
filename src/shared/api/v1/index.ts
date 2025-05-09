@@ -1,10 +1,8 @@
-import { BaseQueryFn } from '@reduxjs/toolkit/query';
 import { api } from '..';
 
 import type * as Types from './v1-types';
-import { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
 
-const v1Api = api.enhanceEndpoints({}).injectEndpoints({
+export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
   endpoints: (builder) => ({
     getOrders: builder.query<Types.GetOrdersOutput, Types.GetOrdersInput>({
       query: (params) => ({

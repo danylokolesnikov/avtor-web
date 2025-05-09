@@ -2,7 +2,7 @@ import { api } from '..';
 
 import type * as Types from './auth-types';
 
-const auth = api.enhanceEndpoints({}).injectEndpoints({
+export const authApi = api.enhanceEndpoints({}).injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<Types.LoginOutput, Types.LoginInput>({
       query: (body) => ({
@@ -21,4 +21,4 @@ const auth = api.enhanceEndpoints({}).injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = auth;
+export const { useLoginMutation, useLogoutMutation } = authApi;

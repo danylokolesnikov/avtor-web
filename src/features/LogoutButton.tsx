@@ -1,5 +1,6 @@
 import { api } from '@/shared/api';
-import { useLogoutMutation } from '@/shared/api/auth';
+import { authApi, useLogoutMutation } from '@/shared/api/auth';
+import { v1Api } from '@/shared/api/v1';
 import { Button } from '@/shared/components/Button';
 import { ROUTE } from '@/shared/helpers/routers';
 import { useAppDispatch } from '@/shared/store';
@@ -20,8 +21,9 @@ export function LogoutButton() {
       });
 
       dispatch(api.util.resetApiState());
-
-      router.push(ROUTE.home);
+      dispatch(authApi.util.resetApiState());
+      dispatch(v1Api.util.resetApiState());
+      router.reload();
     } catch (error) {
       console.error('Logout error:', error);
     }
