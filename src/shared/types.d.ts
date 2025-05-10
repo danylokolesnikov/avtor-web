@@ -21,3 +21,10 @@ export type OrderPaymentEntity = {
   percent: string;
   needApproval: boolean;
 };
+
+export type UserEntity = {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+};

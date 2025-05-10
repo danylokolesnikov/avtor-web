@@ -4,6 +4,12 @@ import type * as Types from './v1-types';
 
 export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
   endpoints: (builder) => ({
+    getMe: builder.query<Types.GetMeOutput, void>({
+      query: () => ({
+        url: '/api/v1/authors/me',
+        method: 'GET',
+      }),
+    }),
     getOrders: builder.query<Types.GetOrdersOutput, Types.GetOrdersInput>({
       query: (params) => ({
         url: '/api/v1/orders',
@@ -53,6 +59,7 @@ export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
 });
 
 export const {
+  useGetMeQuery,
   useGetOrdersQuery,
   useLazyGetOrdersQuery,
   useOrderApproveMutation,

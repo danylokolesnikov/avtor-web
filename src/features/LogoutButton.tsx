@@ -2,6 +2,7 @@ import { api } from '@/shared/api';
 import { authApi, useLogoutMutation } from '@/shared/api/auth';
 import { v1Api } from '@/shared/api/v1';
 import { BaseButton } from '@/shared/components/BaseButton';
+import { ROUTE } from '@/shared/helpers/routers';
 import { useAppDispatch } from '@/shared/store';
 import cn from 'classnames';
 import { useRouter } from 'next/router';
@@ -13,7 +14,7 @@ type LogoutButtonProps = {
 
 export function LogoutButton({ className }: LogoutButtonProps) {
   const [logout] = useLogoutMutation();
-  const router = useRouter();
+  const { push } = useRouter();
   const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
@@ -24,10 +25,11 @@ export function LogoutButton({ className }: LogoutButtonProps) {
         error: 'Помилка виходу',
       });
 
+      await push(ROUTE.home);
+
       dispatch(api.util.resetApiState());
       dispatch(authApi.util.resetApiState());
       dispatch(v1Api.util.resetApiState());
-      router.reload();
     } catch (error) {
       console.error('Logout error:', error);
     }

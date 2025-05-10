@@ -1,5 +1,7 @@
 import type { OrderStatus } from '@/shared/helpers/enums';
-import type { OrderEntity } from '@/shared/types';
+import type { OrderEntity, UserEntity } from '@/shared/types';
+
+export type GetMeOutput = UserEntity;
 
 export type GetOrdersOutput = {
   items: Array<OrderEntity>;
