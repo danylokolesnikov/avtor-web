@@ -1,0 +1,18 @@
+.root {
+    cursor: pointer;
+    transition: all .08s ease-out;
+    font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.root:disabled {
+    opacity: .75;
+    cursor: default;
+}
+
+.root:not([disabled]):active {
+    transform: scale(0.95);
+}

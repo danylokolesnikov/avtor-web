@@ -1,17 +1,14 @@
 import { Html, Head, Main, NextScript } from 'next/document';
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
 
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 export default function Document() {
   return (
-    <Html lang="en">
-      <Head />
+    <Html lang="uk">
+      <Head>
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        />
+      </Head>
       <body className="antialiased">
         <Main />
         <NextScript />

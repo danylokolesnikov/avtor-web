@@ -4,9 +4,13 @@ import {
 } from '@/shared/api/v1';
 import { Button } from '@/shared/components/Button';
 import { Table } from '@/shared/components/Table';
-import { TableColCell } from '@/shared/components/Table/types';
+import {
+  MobileTableItemProps,
+  TableColCell,
+} from '@/shared/components/Table/types';
 import { EnumOrderStatus, OrderStatus } from '@/shared/helpers/enums';
 import { OrderEntity } from '@/shared/types';
+import cn from 'classnames';
 import moment from 'moment';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
@@ -24,25 +28,27 @@ type Context = {
 
 export function OrdersTable({ status }: OrdersTableProps) {
   const [nextCursor, setNextCursor] = useState<string>();
-  const [items, setItems] = useState<Array<OrderEntity>>([]);
-  const [getOrders, { isFetching, isLoading }] = useLazyGetOrdersQuery();
+  const [items, setItems] = useState<Array<OrderEntity> | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [getOrders, { isFetching }] = useLazyGetOrdersQuery();
 
-  const loadOrders = async (isLoadMore: boolean) => {
+  const loadOrders = async () => {
     if (isFetching) return;
 
-    const res = await getOrders({ status, limit: 5, cursor: nextCursor });
+    const res = await getOrders({ status, cursor: nextCursor });
 
     if (res.data) {
       const items = res.data.items;
-      setItems(isLoadMore ? (prev) => prev.concat(items) : items);
+      setIsError(false);
+      setItems((prev) => (prev ? prev.concat(items) : items));
       setNextCursor(res.data.cursor);
+    } else {
+      setIsError(true);
     }
   };
 
-  const loadMore = () => loadOrders(true);
-
   useEffect(() => {
-    loadOrders(false);
+    loadOrders();
   }, [status]);
 
   const [orderApprove] = useOrderApproveMutation();
@@ -57,16 +63,18 @@ export function OrdersTable({ status }: OrdersTableProps) {
         });
 
         setItems((prev) =>
-          prev.map((e) => {
-            if (e.id !== id || !e.payment) return e;
-            return {
-              ...e,
-              payment: {
-                ...e.payment,
-                needApproval: false,
-              },
-            };
-          }),
+          prev
+            ? prev.map((e) => {
+                if (e.id !== id || !e.payment) return e;
+                return {
+                  ...e,
+                  payment: {
+                    ...e.payment,
+                    needApproval: false,
+                  },
+                };
+              })
+            : prev,
         );
       } catch (error) {}
     },
@@ -79,7 +87,7 @@ export function OrdersTable({ status }: OrdersTableProps) {
   );
 
   return (
-    <div>
+    <div className="pt-7 sm:pt-16">
       <Table
         cols={
           {
@@ -89,19 +97,64 @@ export function OrdersTable({ status }: OrdersTableProps) {
           }[status]
         }
         context={context}
-        data={items}
+        data={items ?? []}
+        renderMobile={MobileTableItem}
       />
-      {nextCursor && (
-        <div className="flex justify-center">
-          <Button onClick={loadMore}>Далі</Button>
+      {isError ? (
+        <div className="grid items-center justify-center gap-2 text-center">
+          <h4 className="text-[1.2rem]">Сталася помилка!</h4>
+          <Button variant="secondary" size="small" onClick={loadOrders}>
+            Спробувати ще раз
+          </Button>
         </div>
+      ) : !items ? (
+        <div className="text-center">Завантаження...</div>
+      ) : (
+        nextCursor && (
+          <div className="flex justify-center pt-7 sm:pt-16">
+            <Button onClick={loadOrders} className="max-w-[10rem] w-full">
+              Далі
+            </Button>
+          </div>
+        )
       )}
+    </div>
+  );
+}
+
+function MobileTableItem<T extends OrderEntity, C extends Context>({
+  data,
+  context,
+  cols,
+}: MobileTableItemProps<OrderEntity, Context>) {
+  return (
+    <div className="grid grid-cols-1 gap-2">
+      {cols.map((elem, idx) => {
+        const isApproveButton = elem.key === 'approveButton';
+        return (
+          <div
+            key={idx}
+            className={cn(
+              {
+                'flex justify-between': !isApproveButton,
+              },
+              ' border-b pb-1 border-[var(--gray-100)] last:border-b-0',
+            )}
+          >
+            <div>{elem.label}</div>
+            <div className="font-semibold">
+              {elem.render(data, context) || '-'}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
 
 const colsPending: Array<TableColCell<OrderEntity, Context>> = [
   {
+    key: 'number',
     label: 'Номер замовлення',
     render: (data) => data['nomer-zakaza'],
   },
@@ -128,14 +181,22 @@ const colsPending: Array<TableColCell<OrderEntity, Context>> = [
       }[payment.number],
   },
   {
-    label: '',
-    render: ({ id, payment }, context) => (
-      <Button
-        onClick={() => payment?.needApproval && context?.handleOrderApprove(id)}
-        disabled={!payment?.needApproval}
-      >
-        Підтвердити
-      </Button>
+    label: null,
+    key: 'approveButton',
+    render: ({ payment, id }, context) => (
+      <div className="flex mt-2 md:justify-end md:mt-0">
+        <Button
+          onClick={() =>
+            payment?.needApproval && context?.handleOrderApprove(id)
+          }
+          disabled={!payment?.needApproval}
+          variant="secondary"
+          size="small"
+          className="md:max-w-[10rem] w-full"
+        >
+          Підтвердити
+        </Button>
+      </div>
     ),
   },
 ];

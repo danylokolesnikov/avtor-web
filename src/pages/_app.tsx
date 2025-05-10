@@ -8,13 +8,15 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
-      <ToastContainer
-        position="bottom-center"
-        autoClose={2000}
-        pauseOnHover
-        theme="light"
-      />
+      <main className="h-full">
+        <Component {...pageProps} />
+        <ToastContainer
+          position="bottom-center"
+          autoClose={2000}
+          pauseOnHover
+          theme="light"
+        />
+      </main>
     </Provider>
   );
 }

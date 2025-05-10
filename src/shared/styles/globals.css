@@ -1,11 +1,75 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy-Medium.woff2') format('woff2'),
+    url('/fonts/Gilroy-Medium.woff') format('woff');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy-SemiBold.woff2') format('woff2'),
+    url('/fonts/Gilroy-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Gilroy';
+  src: url('/fonts/Gilroy-Bold.woff2') format('woff2'),
+    url('/fonts/Gilroy-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+}
 
 body,
 html {
-    @apply h-full;
+  @apply h-full;
+}
+
+body {
+  font-family: 'Gilroy', sans-serif;
+  font-weight: 500;
 }
 
 #__next {
-    @apply grid h-full grid-cols-1;
+  @apply grid h-full grid-cols-1;
+}
+
+@theme {
+  --gray-50: #F1F1F1;
+  --gray-100: #E6E6E6;
+  --gray-300: #B5B5B5;
+
+  --purple-100: #AF77FF;
+  --purple-200: #9A5CFF;
+  --purple-300: #8750FF;
+  --purple-400: #7A43FF;
+  --purple-500: #6738AA;
+
+  --screen-space: 1rem;
+  --screen-container: 80rem;
+
+  --Button-primary-background-color: var(--purple-400);
+  --Button-primary-border-color: var(--purple-400);
+  --Button-primary-color: var(--color-white);
+  --Button-primary-background-color--hover: var(--purple-300);
+  --Button-primary-border-color--hover: var(--purple-300);
+  --Button-primary-background-color--active: var(--purple-300);
+  --Button-primary-border-color--active: var(--purple-300);
+
+  --Button-secondary-background-color: var(--color-white);
+  --Button-secondary-border-color: var(--purple-500);
+  --Button-secondary-color: var(--purple-500);
+  --Button-secondary-background-color--hover: var(--purple-300);
+  --Button-secondary-border-color--hover: var(--purple-300);
+  --Button-secondary-color--hover: var(--color-white);
+  --Button-secondary-background-color--active: var(--purple-300);
+  --Button-secondary-border-color--active: var(--purple-300);
+  --Button-secondary-color--active: var(--color-white);
+  --Button-secondary-background-color--disabled: var(--gray-50);
+  --Button-secondary-border-color--disabled: var(--gray-50);
+  --Button-secondary-color--disabled: var(--gray-300);
 }
