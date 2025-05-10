@@ -1,6 +1,7 @@
 import { useLoginMutation } from '@/shared/api/auth';
 import type { LoginInput } from '@/shared/api/auth/auth-types';
 import { Button } from '@/shared/components/Button';
+import { InputField } from '@/shared/components/InputField';
 import { ROUTE } from '@/shared/helpers/routers';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -47,14 +48,38 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center h-full">
-      <form onSubmit={handleSubmit} className="grid gap-2">
-        <input name="username" type="text" required />
-        <input name="password" type="password" required />
-        <Button type="submit" isLoading={isLoading} disabled={isSuccess}>
-          Увійти
-        </Button>
-      </form>
+    <div className="px-[var(--screen-space)] h-full">
+      <div className="max-w-[var(--screen-container)] m-auto h-full">
+        <div className="flex items-center justify-center h-full py-[2.5rem]">
+          <div>
+            <h1 className="text-2xl text-center">Вхід в особистий кабінет</h1>
+            <form onSubmit={handleSubmit} className="grid gap-4 mt-8">
+              <InputField
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Логін"
+                required
+              />
+              <InputField
+                id="password"
+                name="password"
+                type="password"
+                required
+                placeholder="Пароль"
+              />
+              <Button
+                type="submit"
+                isLoading={isLoading}
+                disabled={isSuccess}
+                className="max-w-[10rem] m-auto w-full mt-2"
+              >
+                Увійти
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

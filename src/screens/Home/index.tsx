@@ -12,7 +12,7 @@ export const HomeScreen: React.FC = () => {
         style={{ backgroundImage: `url("${Image.src}")` }}
       />
       <div className="flex justify-center items-center h-full text-white">
-        <Link href={ROUTE.login} className=" absolute top-26 m-auto ">
+        <Link href={ROUTE.login} className="absolute top-26 m-auto">
           Увійти
         </Link>
 
