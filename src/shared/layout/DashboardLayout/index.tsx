@@ -10,7 +10,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
       <header className="sticky top-0 z-50 bg-white border-b border-[var(--gray-100)] h-max">
         <div className="px-[var(--screen-space)] py-2.5">
           <div className="max-w-[var(--screen-container)] m-auto flex justify-end">
-            <LogoutButton />
+            <LogoutButton className=''/>
           </div>
         </div>
       </header>
