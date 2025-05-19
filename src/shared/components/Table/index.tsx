@@ -45,14 +45,7 @@ export function Table<T extends unknown, C extends TableContext>({
                 'pb-11 px-3 first:pl-0 last:pr-0 font-medium  h-full text-center',
               )}
             >
-              <div
-                className={cn(
-                  elem.label &&
-                    'border border-[var(--purple-500)] rounded-md p-1 h-full',
-                )}
-              >
-                {elem.label}
-              </div>
+              <div className={cn(elem.label && 'p-1 h-full font-bold')}>{elem.label}</div>
             </th>
           ))}
         </tr>

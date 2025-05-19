@@ -28,7 +28,7 @@ export const OrdersScreen: React.FC = withClientOnly(() => {
             {
               {
                 [EnumOrderStatus.PENDING]: 'Очікують оплати',
-                [EnumOrderStatus.IN_PROGRESS]: 'У процесі (роботи)',
+                [EnumOrderStatus.IN_PROGRESS]: 'Графік робіт',
                 [EnumOrderStatus.PAID]: 'Завершені оплати',
               }[elem]
             }
