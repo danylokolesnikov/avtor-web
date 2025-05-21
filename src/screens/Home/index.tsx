@@ -24,7 +24,9 @@ export const HomeScreen: React.FC = () => {
             Увійти
           </Button>
         </div>
-        <h1 className="text-2xl md:text-7xl font-extrabold">Openstorinka</h1>
+        <h1 className="text-2xl md:text-7xl font-extrabold">
+          Сайт для авторів
+        </h1>
       </div>
     </>
   );

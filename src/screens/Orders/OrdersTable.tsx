@@ -203,7 +203,7 @@ const colsPending: Array<TableColCell<OrderEntity, Context>> = [
           size="small"
           className="md:max-w-[10rem] w-full"
         >
-          Підтвердити
+          {payment?.needApproval ? 'Підтвердити' : 'Підтверджено'}
         </Button>
       </div>
     ),
