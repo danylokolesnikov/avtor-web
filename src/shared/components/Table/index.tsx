@@ -7,6 +7,7 @@ export type TableProps<T extends unknown, C extends TableContext> = {
   cols: Array<TableColCell<T, C>>;
   data: Array<T>;
   renderMobile?: React.FC<MobileTableItemProps<T, C>>;
+  className?: string;
 };
 
 export function Table<T extends unknown, C extends TableContext>({
@@ -14,6 +15,7 @@ export function Table<T extends unknown, C extends TableContext>({
   data,
   context,
   renderMobile: RenderMobile,
+  className,
 }: TableProps<T, C>) {
   const { width, md } = useScreenSize();
 
@@ -21,7 +23,7 @@ export function Table<T extends unknown, C extends TableContext>({
 
   if (md && typeof RenderMobile === 'function') {
     return (
-      <div className="grid grid-cols-1 gap-2">
+      <div className={cn('grid grid-cols-1 gap-2', className)}>
         {data.map((elem, idx) => (
           <div
             key={idx}
@@ -35,17 +37,17 @@ export function Table<T extends unknown, C extends TableContext>({
   }
 
   return (
-    <table className="w-full overflow-hidden table-fixed">
+    <table className={cn('w-full overflow-hidden table-fixed', className)}>
       <thead>
         <tr>
           {cols.map((elem, idx) => (
             <th
               key={idx}
-              className={cn(
-                'pb-11 px-3 first:pl-0 last:pr-0 font-medium  h-full text-center',
-              )}
+              className={cn('pb-11 px-3 font-medium  h-full text-center')}
             >
-              <div className={cn(elem.label && 'p-1 h-full font-bold')}>{elem.label}</div>
+              <div className={cn(elem.label && 'h-full font-bold')}>
+                {elem.label}
+              </div>
             </th>
           ))}
         </tr>

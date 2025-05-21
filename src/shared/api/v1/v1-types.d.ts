@@ -14,6 +14,14 @@ export type GetOrdersInput = {
   limit?: number;
 };
 
+export type GetStatsOutput = {
+  total: number;
+  waitingForApproval: number;
+  waitingForPayment: number;
+};
+
+export type GetStatsInput = void;
+
 export type OrderApproveOutput = {
   id: string;
 };

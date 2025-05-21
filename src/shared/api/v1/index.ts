@@ -17,6 +17,12 @@ export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
         params,
       }),
     }),
+    getStats: builder.query<Types.GetStatsOutput, Types.GetStatsInput>({
+      query: () => ({
+        url: '/api/v1/orders/stats',
+        method: 'GET',
+      }),
+    }),
     orderApprove: builder.mutation<
       Types.OrderApproveOutput,
       Types.OrderApproveInput
@@ -63,4 +69,5 @@ export const {
   useGetOrdersQuery,
   useLazyGetOrdersQuery,
   useOrderApproveMutation,
+  useGetStatsQuery
 } = v1Api;

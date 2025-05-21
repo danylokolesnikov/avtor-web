@@ -1,4 +1,5 @@
 import {
+  useGetStatsQuery,
   useLazyGetOrdersQuery,
   useOrderApproveMutation,
 } from '@/shared/api/v1';
@@ -31,6 +32,7 @@ export function OrdersTable({ status }: OrdersTableProps) {
   const [items, setItems] = useState<Array<OrderEntity> | null>(null);
   const [isError, setIsError] = useState(false);
   const [getOrders, { isFetching }] = useLazyGetOrdersQuery();
+  const { data } = useGetStatsQuery();
 
   const loadOrders = async () => {
     if (isFetching) return;
@@ -88,18 +90,25 @@ export function OrdersTable({ status }: OrdersTableProps) {
 
   return (
     <div className="pt-7 sm:pt-16">
-      <Table
-        cols={
-          {
-            [EnumOrderStatus.PENDING]: colsPending,
-            [EnumOrderStatus.IN_PROGRESS]: colsInProgress,
-            [EnumOrderStatus.PAID]: colsPaid,
-          }[status]
-        }
-        context={context}
-        data={items ?? []}
-        renderMobile={MobileTableItem}
-      />
+      {data && (
+        <div className="bg-[#C9A4FF] w-max rounded-full mr-0 ml-auto p-1.5 px-3 text-xs text-white">
+          Загальна сума {data.total} грн
+        </div>
+      )}
+      <div className="pt-3">
+        <Table
+          cols={
+            {
+              [EnumOrderStatus.PENDING]: colsPending,
+              [EnumOrderStatus.IN_PROGRESS]: colsInProgress,
+              [EnumOrderStatus.PAID]: colsPaid,
+            }[status]
+          }
+          context={context}
+          data={items ?? []}
+          renderMobile={MobileTableItem}
+        />
+      </div>
       {isError ? (
         <div className="grid items-center justify-center gap-2 text-center">
           <h4 className="text-[1.2rem]">Сталася помилка!</h4>
