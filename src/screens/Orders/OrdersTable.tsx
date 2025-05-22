@@ -90,9 +90,9 @@ export function OrdersTable({ status }: OrdersTableProps) {
 
   return (
     <div className="pt-7 sm:pt-16">
-      {data && (
+      {data && EnumOrderStatus.PENDING === status && (
         <div className="bg-[#C9A4FF] w-max rounded-full mr-0 ml-auto p-1.5 px-3 text-xs text-white">
-          Загальна сума {data.total} грн
+          Загальна сума {data.waitingForPayment} грн
         </div>
       )}
       <div className="pt-3">
