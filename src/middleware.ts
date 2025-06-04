@@ -4,8 +4,13 @@ import { ROUTE } from './shared/helpers/routers';
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('kursach-authors')?.value;
+  const response = NextResponse.next();
 
-//   console.log(request)
+  if (token) {
+    response.cookies.set('hasToken', '1', {
+      path: '/',
+    });
+  }
 
   if (!token && request.nextUrl.pathname === ROUTE.dashboard) {
     return NextResponse.redirect(new URL(ROUTE.login, request.url));
@@ -15,7 +20,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(ROUTE.dashboard, request.url));
   }
 
-  return NextResponse.next();
+  return response;
 }
 
 export const config = {

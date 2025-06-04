@@ -25,6 +25,11 @@ export type OrderPaymentEntity = {
 export type UserEntity = {
   id: string;
   name: string;
+  isAdmin: boolean;
   createdAt: string;
   updatedAt: string;
+};
+
+export type SettingsEntity = {
+  approval: boolean;
 };

@@ -1,19 +1,22 @@
 import {
+  useGetSettingsQuery,
   useGetStatsQuery,
   useLazyGetOrdersQuery,
   useOrderApproveMutation,
 } from '@/shared/api/v1';
 import { Button } from '@/shared/components/Button';
+import { LoadMoreWrapper } from '@/shared/components/LoadMoreWrapper';
 import { Table } from '@/shared/components/Table';
 import {
   MobileTableItemProps,
   TableColCell,
 } from '@/shared/components/Table/types';
 import { EnumOrderStatus, OrderStatus } from '@/shared/helpers/enums';
-import { OrderEntity } from '@/shared/types';
+import { useLoadMore } from '@/shared/hooks/useLoadMore';
+import { OrderEntity, SettingsEntity } from '@/shared/types';
 import cn from 'classnames';
 import moment from 'moment';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { toast } from 'react-toastify';
 
 type OrdersTableProps = {
@@ -25,33 +28,21 @@ type HandleOrderApprove = (id: string) => Promise<void>;
 type Context = {
   handleOrderApprove: HandleOrderApprove;
   status: OrderStatus;
+  settings: SettingsEntity | null;
 };
 
 export function OrdersTable({ status }: OrdersTableProps) {
-  const [nextCursor, setNextCursor] = useState<string>();
-  const [items, setItems] = useState<Array<OrderEntity> | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [getOrders, { isFetching }] = useLazyGetOrdersQuery();
   const { data } = useGetStatsQuery();
 
-  const loadOrders = async () => {
-    if (isFetching) return;
-
-    const res = await getOrders({ status, cursor: nextCursor });
-
-    if (res.data) {
-      const items = res.data.items;
-      setIsError(false);
-      setItems((prev) => (prev ? prev.concat(items) : items));
-      setNextCursor(res.data.cursor);
-    } else {
-      setIsError(true);
-    }
-  };
-
-  useEffect(() => {
-    loadOrders();
-  }, [status]);
+  const [getOrders] = useLazyGetOrdersQuery();
+  const { data: settings } = useGetSettingsQuery();
+  const { isError, items, hasMore, loadMore, setItems } = useLoadMore(
+    getOrders,
+    {
+      params: { status },
+      deps: [status],
+    },
+  );
 
   const [orderApprove] = useOrderApproveMutation();
 
@@ -84,8 +75,8 @@ export function OrdersTable({ status }: OrdersTableProps) {
   );
 
   const context: Context = useMemo(
-    () => ({ handleOrderApprove, status }),
-    [handleOrderApprove, status],
+    () => ({ handleOrderApprove, status, settings: settings ?? null }),
+    [handleOrderApprove, status, settings],
   );
 
   return (
@@ -95,38 +86,27 @@ export function OrdersTable({ status }: OrdersTableProps) {
           Загальна сума {data.waitingForPayment} грн
         </div>
       )}
-      <div className="pt-3">
-        <Table
-          cols={
-            {
-              [EnumOrderStatus.PENDING]: colsPending,
-              [EnumOrderStatus.IN_PROGRESS]: colsInProgress,
-              [EnumOrderStatus.PAID]: colsPaid,
-            }[status]
-          }
-          context={context}
-          data={items ?? []}
-          renderMobile={MobileTableItem}
-        />
-      </div>
-      {isError ? (
-        <div className="grid items-center justify-center gap-2 text-center">
-          <h4 className="text-[1.2rem]">Сталася помилка!</h4>
-          <Button variant="secondary" size="small" onClick={loadOrders}>
-            Спробувати ще раз
-          </Button>
+      <LoadMoreWrapper
+        isError={isError}
+        isInitLoading={!items}
+        hasMore={hasMore}
+        loadMore={loadMore}
+      >
+        <div className="pt-3">
+          <Table
+            cols={
+              {
+                [EnumOrderStatus.PENDING]: colsPending,
+                [EnumOrderStatus.IN_PROGRESS]: colsInProgress,
+                [EnumOrderStatus.PAID]: colsPaid,
+              }[status]
+            }
+            context={context}
+            data={items ?? []}
+            renderMobile={MobileTableItem}
+          />
         </div>
-      ) : !items ? (
-        <div className="text-center">Завантаження...</div>
-      ) : (
-        nextCursor && (
-          <div className="flex justify-center pt-7 sm:pt-16">
-            <Button onClick={loadOrders} className="max-w-[10rem] w-full">
-              Далі
-            </Button>
-          </div>
-        )
-      )}
+      </LoadMoreWrapper>
     </div>
   );
 }
@@ -196,9 +176,11 @@ const colsPending: Array<TableColCell<OrderEntity, Context>> = [
       <div className="flex mt-2 md:justify-end md:mt-0">
         <Button
           onClick={() =>
-            payment?.needApproval && context?.handleOrderApprove(id)
+            context?.settings?.approval &&
+            payment?.needApproval &&
+            context?.handleOrderApprove(id)
           }
-          disabled={!payment?.needApproval}
+          disabled={!context?.settings?.approval || !payment?.needApproval}
           variant="secondary"
           size="small"
           className="md:max-w-[10rem] w-full"

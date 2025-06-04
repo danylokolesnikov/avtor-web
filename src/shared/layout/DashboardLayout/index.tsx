@@ -1,5 +1,5 @@
-import { LogoutButton } from '@/features/LogoutButton';
-import { useGetMeQuery } from '@/shared/api/v1';
+import { LogoutButton } from '@/shared/components/LogoutButton';
+import { useSession } from '@/shared/contexts/Session';
 
 type DashboardLayoutProps = {
   children: React.ReactNode;
@@ -26,7 +26,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 }
 
 function DisplayUser() {
-  const { data } = useGetMeQuery();
+  const { user } = useSession();
 
   return (
     <div className="grid grid-cols-[1.5rem_auto] items-center">
@@ -53,7 +53,7 @@ function DisplayUser() {
           ></path>
         </svg>
       </div>
-      <div className="pl-2 truncate inline">{data?.name}</div>
+      <div className="pl-2 truncate inline">{user?.name}</div>
     </div>
   );
 }

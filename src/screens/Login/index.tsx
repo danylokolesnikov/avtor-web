@@ -2,6 +2,7 @@ import { useLoginMutation } from '@/shared/api/auth';
 import type { LoginInput } from '@/shared/api/auth/auth-types';
 import { Button } from '@/shared/components/Button';
 import { InputField } from '@/shared/components/InputField';
+import { useSession } from '@/shared/contexts/Session';
 import { ROUTE } from '@/shared/helpers/routers';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
@@ -15,6 +16,7 @@ const loginSchema = z.object({
 export const LoginScreen: React.FC = () => {
   const [login, { isLoading, isSuccess }] = useLoginMutation();
   const { push } = useRouter();
+  const { handleSucssesLogin } = useSession();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,7 +40,10 @@ export const LoginScreen: React.FC = () => {
     toast.promise(
       login(parsed.data)
         .unwrap()
-        .then(() => push(ROUTE.dashboard)),
+        .then(() => {
+          push(ROUTE.dashboard);
+          handleSucssesLogin();
+        }),
       {
         pending: 'Вхід...',
         success: 'Ласкаво просимо!',

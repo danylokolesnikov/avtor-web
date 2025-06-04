@@ -1,6 +1,8 @@
+import { extractParenthesesContent } from '@/shared/utils/extractParenthesesContent';
 import { api } from '..';
 
 import type * as Types from './v1-types';
+import { parseRtkArgs } from '@/shared/utils/parseRtkArgs';
 
 export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
   endpoints: (builder) => ({
@@ -23,6 +25,12 @@ export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
         method: 'GET',
       }),
     }),
+    getSettings: builder.query<Types.GetSettingsOutput, void>({
+      query: () => ({
+        url: '/api/v1/settings',
+        method: 'GET',
+      }),
+    }),
     orderApprove: builder.mutation<
       Types.OrderApproveOutput,
       Types.OrderApproveInput
@@ -41,13 +49,13 @@ export const v1Api = api.enhanceEndpoints({}).injectEndpoints({
 
           for (const queryCache of Object.keys(getState().api.queries)) {
             if (!queryCache.includes(target)) continue;
-            const args = queryCache.match(/\((.*?)\)/g)?.[0].slice(1, -1);
+            const args = extractParenthesesContent(queryCache);
             if (!args) continue;
 
             dispatch(
               v1Api.util.updateQueryData(
-                'getOrders',
-                JSON.parse(args),
+                target,
+                parseRtkArgs(args),
                 (draft) => {
                   draft.items.forEach((e) => {
                     if (e.id === id && e.payment) {
@@ -69,5 +77,6 @@ export const {
   useGetOrdersQuery,
   useLazyGetOrdersQuery,
   useOrderApproveMutation,
-  useGetStatsQuery
+  useGetStatsQuery,
+  useGetSettingsQuery,
 } = v1Api;

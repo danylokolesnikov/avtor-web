@@ -1,12 +1,10 @@
+import { Pagination } from '@/shared/common-types';
 import type { OrderStatus } from '@/shared/helpers/enums';
-import type { OrderEntity, UserEntity } from '@/shared/types';
+import type { OrderEntity, SettingsEntity, UserEntity } from '@/shared/types';
 
 export type GetMeOutput = UserEntity;
 
-export type GetOrdersOutput = {
-  items: Array<OrderEntity>;
-  cursor?: string;
-};
+export type GetOrdersOutput = Pagination<OrderEntity>;
 
 export type GetOrdersInput = {
   status?: OrderStatus;
@@ -29,3 +27,5 @@ export type OrderApproveOutput = {
 export type OrderApproveInput = {
   id: string;
 };
+
+export type GetSettingsOutput = SettingsEntity;
