@@ -37,7 +37,9 @@ export const AdminUsersListScreen: React.FC = withClientOnly(() => {
   return (
     <div>
       <div className="flex items-center shadow px-4 py-2 w-max rounded-md">
-        <div className='font-bold mr-2'>Кнопки вимкнені</div>
+        <div className="font-bold mr-2">
+          Кнопки {approval ? 'ввімкнені' : 'вимкнені'}
+        </div>
         <Checkbox
           disabled={isLoading}
           checked={approval}
