@@ -6,11 +6,9 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get('kursach-authors')?.value;
   const response = NextResponse.next();
 
-  if (token) {
-    response.cookies.set('hasToken', '1', {
-      path: '/',
-    });
-  }
+  response.cookies.set('hasToken', String(Number(Boolean(token))), {
+    path: '/',
+  });
 
   if (!token && request.nextUrl.pathname === ROUTE.dashboard) {
     return NextResponse.redirect(new URL(ROUTE.login, request.url));

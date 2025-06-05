@@ -61,7 +61,7 @@ function Dashboard({ children }: DashboardProps) {
   useEffect(() => {
     if (!redirectTo) return;
     push(redirectTo);
-  }, [redirectTo]);
+  }, [redirectTo, user]);
 
   if (isLoading)
     return (

@@ -31,7 +31,12 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
   const { push } = useRouter();
   const dispatch = useAppDispatch();
   const [hasToken, setHasToken] = useState<boolean | null>(null);
-  const { data, isLoading: _isLoading } = useGetMeQuery(undefined, {
+  const {
+    data,
+    isLoading: _isLoading,
+    refetch,
+    isError,
+  } = useGetMeQuery(undefined, {
     skip: !hasToken,
   });
 
@@ -55,12 +60,16 @@ export const SessionProvider = ({ children }: { children: ReactNode }) => {
       dispatch(authApi.util.resetApiState());
       dispatch(v1Api.util.resetApiState());
       dispatch(v1AdminApi.util.resetApiState());
+      setHasToken(false)
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  const handleSucssesLogin = () => setHasToken(true);
+  const handleSucssesLogin = () => {
+    setHasToken(true);
+    isError && refetch();
+  };
 
   return (
     <SessionContext.Provider
