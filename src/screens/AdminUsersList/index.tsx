@@ -2,7 +2,7 @@ import { withClientOnly } from '@/shared/hoc/withOnlyClient';
 import { Table } from '@/shared/components/Table';
 import { Checkbox } from '@/shared/components/Checkbox/Checkbox';
 import {
-  useLazyGetAdminStatsQuery,
+  useGetAdminStatsQuery,
   useUpdateApprovalSettingsMutation,
 } from '@/shared/api/v1-admin';
 import {
@@ -17,8 +17,7 @@ import { useGetSettingsQuery } from '@/shared/api/v1';
 import { toast } from 'react-toastify';
 
 export const AdminUsersListScreen: React.FC = withClientOnly(() => {
-  const [getAdminStats] = useLazyGetAdminStatsQuery();
-  const { isError, items, hasMore, loadMore } = useLoadMore(getAdminStats, {});
+  const { data } = useGetAdminStatsQuery({});
 
   const { data: settings } = useGetSettingsQuery();
   const approval = !!settings?.approval;
@@ -46,21 +45,37 @@ export const AdminUsersListScreen: React.FC = withClientOnly(() => {
           onChange={handleToggle}
         />
       </div>
-      <LoadMoreWrapper
-        isError={isError}
-        isInitLoading={!items}
-        hasMore={hasMore}
-        loadMore={loadMore}
-      >
-        <div className="pt-10">
-          <Table
-            className="max-w-96"
-            cols={cols}
-            data={items ?? []}
-            renderMobile={MobileTableItem}
-          />
+      <div className='mt-5 grid gap-2'>
+        <div className='flex gap-2'>
+          <div>Кількість, що очікують на затвердження:</div>
+          <b>{data?.total.numberOfWaitingForApproval}</b>
         </div>
-      </LoadMoreWrapper>
+        <div className='flex gap-2'>
+          <div>Кількість, що очікують на оплату:</div>
+          <b>{data?.total.numberOfWaitingForPayment}</b>
+        </div>
+        <div className='flex gap-2'>
+          <div>Всього:</div>
+          <b>{data?.total.total}</b>
+        </div>
+        <div className='flex gap-2'>
+          <div>Очікують на затвердження:</div>
+          <b>{data?.total.waitingForApproval}</b>
+        </div>
+        <div className='flex gap-2'>
+          <div>Очікують на оплату:</div>
+          <b>{data?.total.waitingForPayment}</b>
+        </div>
+      </div>
+
+      <div className="pt-10">
+        <Table
+          className="max-w-96"
+          cols={cols}
+          data={data?.items ?? []}
+          renderMobile={MobileTableItem}
+        />
+      </div>
     </div>
   );
 });

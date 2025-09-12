@@ -10,12 +10,20 @@ export type AdminStatsItem = {
   waitingForPayment: number;
 };
 
-export type GetAdminStatsInput = {
-  cursor?: string;
-  limit?: number;
-};
+export type GetAdminStatsInput = {};
 
-export type GetAdminStatsOutput = Pagination<AdminStatsItem>;
+export type GetAdminStatsOutput = {
+  total: {
+    numberOfWaitingForPayment: number;
+    numberOfWaitingForApproval: number;
+    waitingForPayment: number;
+    waitingForApproval: number;
+    total: number;
+  };
+  sortedBy: string;
+  sortedOrder: string;
+  items: Array<AdminStatsItem>;
+};
 
 export type UpdateApprovalSettingsOutput = void;
 export type UpdateApprovalSettingsInput = {
