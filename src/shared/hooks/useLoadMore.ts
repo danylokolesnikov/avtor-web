@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useMemo } from 'react';
 import { Pagination } from '../common-types';
 import { TypedLazyQueryTrigger } from '@reduxjs/toolkit/query/react';
 import { BaseQueryFn } from '@reduxjs/toolkit/query';
@@ -18,9 +18,9 @@ export function useLoadMore<
   lazy: Lazy,
   { params = {} as Omit<Args, 'cursor'>, deps = [] }: LoadMoreParams<Args>,
 ) {
-  const [items, setItems] = useState<
-    NonNullable<Awaited<ReturnType<Lazy>>['data']>['items'] | null
-  >(null);
+  const [itemsMap, setItemsMap] = useState<
+    Map<string, NonNullable<Awaited<ReturnType<Lazy>>['data']>['items']>
+  >(new Map());
   const [cursor, setCursor] = useState<string | null>(null);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,11 @@ export function useLoadMore<
       if (res.data) {
         const items = res.data.items;
         setIsError(false);
-        setItems((prev) => (prev ? prev.concat(items) : items));
+        setItemsMap((prev) => {
+          const newMap = new Map(prev);
+          newMap.set(String(cursor), items);
+          return newMap;
+        });
         setCursor(res.data.cursor);
       } else {
         setIsError(true);
@@ -50,15 +54,16 @@ export function useLoadMore<
   }, [lazy, params, cursor, isLoading]);
 
   useEffect(() => {
-    setItems(null);
+    setItemsMap(new Map());
     setCursor(null);
     loadMore();
   }, deps);
 
+  const items = useMemo(() => Array.from(itemsMap.values()).flat(), [itemsMap]);
+
   return {
     items,
     loadMore,
-    setItems,
     hasMore: !!cursor,
     isLoading,
     isError,
