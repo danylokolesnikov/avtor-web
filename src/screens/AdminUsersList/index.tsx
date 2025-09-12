@@ -11,10 +11,9 @@ import {
   TableContext,
 } from '@/shared/components/Table/types';
 import { AdminStatsItem } from '@/shared/api/v1-admin/v1-admin-types';
-import { useLoadMore } from '@/shared/hooks/useLoadMore';
-import { LoadMoreWrapper } from '@/shared/components/LoadMoreWrapper';
 import { useGetSettingsQuery } from '@/shared/api/v1';
 import { toast } from 'react-toastify';
+import { useMemo } from 'react';
 
 export const AdminUsersListScreen: React.FC = withClientOnly(() => {
   const { data } = useGetAdminStatsQuery({});
@@ -33,6 +32,11 @@ export const AdminUsersListScreen: React.FC = withClientOnly(() => {
     });
   };
 
+  const items = useMemo(
+    () => data?.items.filter((e) => e.waitingForPayment !== 0) ?? [],
+    [data],
+  );
+
   return (
     <div>
       <div className="flex items-center shadow px-4 py-2 w-max rounded-md">
@@ -45,26 +49,26 @@ export const AdminUsersListScreen: React.FC = withClientOnly(() => {
           onChange={handleToggle}
         />
       </div>
-      <div className='mt-5 grid gap-2'>
-        <div className='flex gap-2'>
+      <div className="mt-5 grid gap-2">
+        <div className="flex gap-2">
           <div>Кількість, що очікують на затвердження:</div>
-          <b>{data?.total.numberOfWaitingForApproval}</b>
+          <b>{data?.total.numberOfWaitingForApproval} (автора)</b>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <div>Кількість, що очікують на оплату:</div>
-          <b>{data?.total.numberOfWaitingForPayment}</b>
+          <b>{data?.total.numberOfWaitingForPayment} (автора)</b>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <div>Всього:</div>
-          <b>{data?.total.total}</b>
+          <b>{data?.total.total} грн</b>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <div>Очікують на затвердження:</div>
-          <b>{data?.total.waitingForApproval}</b>
+          <b>{data?.total.waitingForApproval} грн</b>
         </div>
-        <div className='flex gap-2'>
+        <div className="flex gap-2">
           <div>Очікують на оплату:</div>
-          <b>{data?.total.waitingForPayment}</b>
+          <b>{data?.total.waitingForPayment} грн</b>
         </div>
       </div>
 
@@ -72,7 +76,7 @@ export const AdminUsersListScreen: React.FC = withClientOnly(() => {
         <Table
           className="max-w-96"
           cols={cols}
-          data={data?.items ?? []}
+          data={items}
           renderMobile={MobileTableItem}
         />
       </div>
