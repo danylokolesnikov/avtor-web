@@ -64,6 +64,7 @@ export function useLoadMore<
   return {
     items,
     loadMore,
+    setItemsMap,
     hasMore: !!cursor,
     isLoading,
     isError,

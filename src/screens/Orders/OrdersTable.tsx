@@ -36,7 +36,7 @@ export function OrdersTable({ status }: OrdersTableProps) {
 
   const [getOrders] = useLazyGetOrdersQuery();
   const { data: settings } = useGetSettingsQuery();
-  const { isError, items, hasMore, loadMore, setItems } = useLoadMore(
+  const { isError, items, hasMore, loadMore, setItemsMap } = useLoadMore(
     getOrders,
     {
       params: { status },
@@ -55,20 +55,31 @@ export function OrdersTable({ status }: OrdersTableProps) {
           error: 'Не вдалося підтвердити',
         });
 
-        setItems((prev) =>
-          prev
-            ? prev.map((e) => {
-                if (e.id !== id || !e.payment) return e;
-                return {
-                  ...e,
-                  payment: {
-                    ...e.payment,
-                    needApproval: false,
-                  },
-                };
-              })
-            : prev,
-        );
+        setItemsMap((prev) => {
+          if (!prev) {
+            return prev;
+          }
+          const newMap = new Map<string, OrderEntity[]>();
+
+          for (const [key, orders] of newMap.entries()) {
+            newMap.set(
+              key,
+              orders.map((e) =>
+                e.id !== id || !e.payment
+                  ? e
+                  : {
+                      ...e,
+                      payment: {
+                        ...e.payment,
+                        needApproval: false,
+                      },
+                    },
+              ),
+            );
+          }
+
+          return newMap;
+        });
       } catch (error) {}
     },
     [orderApprove],
