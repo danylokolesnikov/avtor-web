@@ -73,3 +73,32 @@
     border-color: var(--Button-secondary-border-color--disabled);
     color: var(--Button-secondary-color--disabled);
 }
+
+
+.green {
+    background-color: var(--Button-green-background-color);
+    color: var(--Button-green-color);
+    border-color: var(--Button-green-border-color);
+}
+
+@media (hover:hover) {
+    .green:not([disabled]):hover {
+        background-color: var(--Button-green-background-color--hover);
+        border-color: var(--Button-green-border-color--hover);
+        color: var(--Button-green-color--hover);
+    }
+}
+
+.green:not([disabled]):active {
+    background-color: var(--Button-green-background-color--active);
+    border-color: var(--Button-green-border-color--active);
+    color: var(--Button-green-color--active);
+}
+
+.green:disabled {
+    opacity: 1;
+    background-color: var(--Button-green-background-color--disabled);
+    border-color: var(--Button-green-border-color--disabled);
+    color: var(--Button-green-color--disabled);
+}
+

@@ -5,7 +5,7 @@ import { BaseButton, BaseButtonProps } from '../BaseButton';
 import styles from './styles.module.css';
 
 export type ButtonProps = BaseButtonProps & {
-  variant?: 'primary' | 'secondary' | null;
+  variant?: 'primary' | 'secondary' | 'green' | null;
   size?: 'large' | 'small';
 };
 

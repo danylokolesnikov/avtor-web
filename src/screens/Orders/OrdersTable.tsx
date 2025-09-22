@@ -192,7 +192,7 @@ const colsPending: Array<TableColCell<OrderEntity, Context>> = [
             context?.handleOrderApprove(id)
           }
           disabled={!context?.settings?.approval || !payment?.needApproval}
-          variant="secondary"
+          variant={payment?.needApproval ? 'secondary' : 'green'}
           size="small"
           className="md:max-w-[10rem] w-full"
         >

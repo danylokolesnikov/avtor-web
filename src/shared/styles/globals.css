@@ -49,6 +49,10 @@ body {
   --purple-400: #7A43FF;
   --purple-500: #6738AA;
 
+  --green-200: #A8F0B0; 
+  --green-300: #4ED451; 
+  --green-400: #3AAA40; 
+
   --screen-space: 1rem;
   --screen-container: 80rem;
 
@@ -72,4 +76,18 @@ body {
   --Button-secondary-background-color--disabled: var(--gray-50);
   --Button-secondary-border-color--disabled: var(--gray-50);
   --Button-secondary-color--disabled: var(--gray-300);
+
+
+  --Button-green-background-color: var(--color-white);
+  --Button-green-border-color: var(--green-300);
+  --Button-green-color: var(--green-300);
+  --Button-green-background-color--hover: var(--green-300);
+  --Button-green-border-color--hover: var(--green-300);
+  --Button-green-color--hover: var(--color-white);
+  --Button-green-background-color--active: var(--green-300);
+  --Button-green-border-color--active: var(--green-400);
+  --Button-green-color--active: var(--color-white);
+  --Button-green-background-color--disabled: var(--color-white);
+  --Button-green-border-color--disabled: var(--green-200);
+  --Button-green-color--disabled: var(--green-200);
 }
