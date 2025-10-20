@@ -159,7 +159,7 @@ function TableItem<T extends AdminStatsItem, C extends TableContext>({
                 <div>
                   <b>{elem['nomer-zakaza']}</b> ({elem.status})
                 </div>
-                <div className="text-end">{elem.price} грн</div>
+                <div className="text-end">{elem.payment?.amount} грн</div>
               </div>
             ))}
           </td>
@@ -190,48 +190,38 @@ export function exportToExcel(
 ) {
   const rows: any[] = [];
 
-  let totalAllAuthors = 0;
-
-   data.forEach((item) => {
-    totalAllAuthors += item.total;
-
+  data.forEach((item) => {
     rows.push({
-      "Автор / Замовлення": item.name.trim(),
-      "Ціна замовлення": "",
-      "Загальна сума": item.total,
+      'Автор / Замовлення': item.name.trim(),
+      'Ціна замовлення': '',
+      'Загальна сума': item.total,
     });
 
     item.orders.forEach((order) => {
       rows.push({
-        "Автор / Замовлення": `   ${order["nomer-zakaza"]}`,
-        "Ціна замовлення": order.price,
-        "Загальна сума": "",
+        'Автор / Замовлення': `   ${order['nomer-zakaza']}`,
+        'Ціна замовлення': order.payment?.amount,
+        'Загальна сума': '',
       });
     });
 
     rows.push({});
   });
 
-  rows.push({
-    "Автор / Замовлення": `Усього авторів: ${data.length}`,
-    "Ціна замовлення": "",
-    "Загальна сума": totalAllAuthors,
-  });
-
   const worksheet = XLSX.utils.json_to_sheet(rows, { skipHeader: false });
 
-  worksheet["!cols"] = [
+  worksheet['!cols'] = [
     { wch: 40 }, // Автор / Замовлення
     { wch: 20 }, // Ціна замовлення
     { wch: 20 }, // Загальна сума
   ];
 
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Автори");
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Автори');
 
-  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
   const blob = new Blob([excelBuffer], {
-    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
   });
   saveAs(blob, fileName);
 }
