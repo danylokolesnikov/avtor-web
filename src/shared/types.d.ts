@@ -13,6 +13,7 @@ export type OrderEntity = {
   'status#updatedAt': string;
   statusName: string;
   'nomer-zakaza': string;
+  stage: string;
 };
 
 export type OrderPaymentEntity = {

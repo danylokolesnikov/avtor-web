@@ -1,104 +1,102 @@
 .root {
-    border: 1px solid;
-    border-radius: 16px;
-    cursor: pointer;
-    transition: all .08s ease-out;
-    font-weight: 500;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  border: 1px solid;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.08s ease-out;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 
 .root:disabled {
-    opacity: .75;
-    cursor: default;
+  opacity: 0.75;
+  cursor: default;
 }
 
 .root:not([disabled]):active {
-    transform: scale(0.95);
+  transform: scale(0.95);
 }
 
 .large {
-    padding: 6px;
-    font-size: 1.125rem;
+  padding: 6px;
+  font-size: 1.125rem;
 }
 
 .small {
-    padding: 2px;
-    font-size: 1rem;
+  padding: 2px;
+  font-size: 1rem;
 }
 
 .primary {
-    background-color: var(--Button-primary-background-color);
-    color: var(--Button-primary-color);
-    border-color: var(--Button-primary-border-color);
+  background-color: var(--Button-primary-background-color);
+  color: var(--Button-primary-color);
+  border-color: var(--Button-primary-border-color);
 }
 
-@media (hover:hover) {
-    .primary:not([disabled]):hover {
-        background-color: var(--Button-primary-background-color--hover);
-        border-color: var(--Button-primary-border-color--hover);
-    }
+@media (hover: hover) {
+  .primary:not([disabled]):hover {
+    background-color: var(--Button-primary-background-color--hover);
+    border-color: var(--Button-primary-border-color--hover);
+  }
 }
 
 .primary:not([disabled]):active {
-    background-color: var(--Button-primary-background-color--active);
-    border-color: var(--Button-primary-border-color--active);
+  background-color: var(--Button-primary-background-color--active);
+  border-color: var(--Button-primary-border-color--active);
 }
 
 .secondary {
-    background-color: var(--Button-secondary-background-color);
-    color: var(--Button-secondary-color);
-    border-color: var(--Button-secondary-border-color);
+  background-color: var(--Button-secondary-background-color);
+  color: var(--Button-secondary-color);
+  border-color: var(--Button-secondary-border-color);
 }
 
-@media (hover:hover) {
-    .secondary:not([disabled]):hover {
-        background-color: var(--Button-secondary-background-color--hover);
-        border-color: var(--Button-secondary-border-color--hover);
-        color: var(--Button-secondary-color--hover);
-    }
+@media (hover: hover) {
+  .secondary:not([disabled]):hover {
+    background-color: var(--Button-secondary-background-color--hover);
+    border-color: var(--Button-secondary-border-color--hover);
+    color: var(--Button-secondary-color--hover);
+  }
 }
 
 .secondary:not([disabled]):active {
-    background-color: var(--Button-secondary-background-color--active);
-    border-color: var(--Button-secondary-border-color--active);
-    color: var(--Button-secondary-color--active);
+  background-color: var(--Button-secondary-background-color--active);
+  border-color: var(--Button-secondary-border-color--active);
+  color: var(--Button-secondary-color--active);
 }
 
 .secondary:disabled {
-    opacity: 1;
-    background-color: var(--Button-secondary-background-color--disabled);
-    border-color: var(--Button-secondary-border-color--disabled);
-    color: var(--Button-secondary-color--disabled);
+  opacity: 1;
+  background-color: var(--Button-secondary-background-color--disabled);
+  border-color: var(--Button-secondary-border-color--disabled);
+  color: var(--Button-secondary-color--disabled);
 }
-
 
 .green {
-    background-color: var(--Button-green-background-color);
-    color: var(--Button-green-color);
-    border-color: var(--Button-green-border-color);
+  background-color: var(--Button-green-background-color);
+  color: var(--Button-green-color);
+  border-color: var(--Button-green-border-color);
 }
 
-@media (hover:hover) {
-    .green:not([disabled]):hover {
-        background-color: var(--Button-green-background-color--hover);
-        border-color: var(--Button-green-border-color--hover);
-        color: var(--Button-green-color--hover);
-    }
+@media (hover: hover) {
+  .green:not([disabled]):hover {
+    background-color: var(--Button-green-background-color--hover);
+    border-color: var(--Button-green-border-color--hover);
+    color: var(--Button-green-color--hover);
+  }
 }
 
 .green:not([disabled]):active {
-    background-color: var(--Button-green-background-color--active);
-    border-color: var(--Button-green-border-color--active);
-    color: var(--Button-green-color--active);
+  background-color: var(--Button-green-background-color--active);
+  border-color: var(--Button-green-border-color--active);
+  color: var(--Button-green-color--active);
 }
 
 .green:disabled {
-    opacity: 1;
-    background-color: var(--Button-green-background-color--disabled);
-    border-color: var(--Button-green-border-color--disabled);
-    color: var(--Button-green-color--disabled);
+  opacity: 1;
+  background-color: var(--Button-green-background-color--disabled);
+  border-color: var(--Button-green-border-color--disabled);
+  color: var(--Button-green-color--disabled);
 }
-

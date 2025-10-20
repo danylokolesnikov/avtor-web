@@ -1,12 +1,12 @@
 import cn from 'classnames';
-import type { MobileTableItemProps, TableColCell, TableContext } from './types';
+import type { TableItemProps, TableColCell, TableContext } from './types';
 import { useScreenSize } from '@/shared/hooks/useScreenSize';
 
 export type TableProps<T extends unknown, C extends TableContext> = {
   context?: C;
   cols: Array<TableColCell<T, C>>;
   data: Array<T>;
-  renderMobile?: React.FC<MobileTableItemProps<T, C>>;
+  render: React.FC<TableItemProps<T, C>>;
   className?: string;
 };
 
@@ -14,36 +14,20 @@ export function Table<T extends unknown, C extends TableContext>({
   cols,
   data,
   context,
-  renderMobile: RenderMobile,
+  render: Render,
   className,
 }: TableProps<T, C>) {
   const { width, md } = useScreenSize();
 
   if (!width) return null;
-
-  if (md && typeof RenderMobile === 'function') {
-    return (
-      <div className={cn('grid grid-cols-1 gap-2', className)}>
-        {data.map((elem, idx) => (
-          <div
-            key={idx}
-            className="p-2 border rounded-lg border-[var(--gray-100)]"
-          >
-            <RenderMobile data={elem} context={context} cols={cols} />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   return (
     <table className={cn('w-full overflow-hidden table-fixed', className)}>
-      <thead>
+      <thead className="hidden md:table-header-group">
         <tr>
           {cols.map((elem, idx) => (
             <th
               key={idx}
-              className={cn('pb-11 px-3 font-medium  h-full text-center')}
+              className={cn('pb-11 pr-3 font-medium  h-full text-start')}
             >
               <div className={cn(elem.label && 'h-full font-bold')}>
                 {elem.label}
@@ -52,21 +36,15 @@ export function Table<T extends unknown, C extends TableContext>({
           ))}
         </tr>
       </thead>
-      <tbody>
+      <tbody className="grid grid-cols-1 gap-2 md:table-row-group">
         {data.map((elem, idx) => (
-          <tr
+          <Render
             key={idx}
-            className="border-b border-[var(--gray-100)] last:border-0"
-          >
-            {cols.map((col, idx) => (
-              <td
-                key={idx}
-                className={cn('text-center', !idx ? 'pb-3' : 'py-3')}
-              >
-                {col.render(elem, context)}
-              </td>
-            ))}
-          </tr>
+            data={elem}
+            context={context}
+            cols={cols}
+            isMobile={md}
+          />
         ))}
       </tbody>
     </table>

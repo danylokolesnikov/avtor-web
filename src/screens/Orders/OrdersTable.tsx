@@ -7,10 +7,7 @@ import {
 import { Button } from '@/shared/components/Button';
 import { LoadMoreWrapper } from '@/shared/components/LoadMoreWrapper';
 import { Table } from '@/shared/components/Table';
-import {
-  MobileTableItemProps,
-  TableColCell,
-} from '@/shared/components/Table/types';
+import { TableItemProps, TableColCell } from '@/shared/components/Table/types';
 import { EnumOrderStatus, OrderStatus } from '@/shared/helpers/enums';
 import { useLoadMore } from '@/shared/hooks/useLoadMore';
 import { OrderEntity, SettingsEntity } from '@/shared/types';
@@ -114,7 +111,7 @@ export function OrdersTable({ status }: OrdersTableProps) {
             }
             context={context}
             data={items ?? []}
-            renderMobile={MobileTableItem}
+            render={TableItem}
           />
         </div>
       </LoadMoreWrapper>
@@ -122,121 +119,158 @@ export function OrdersTable({ status }: OrdersTableProps) {
   );
 }
 
-function MobileTableItem<T extends OrderEntity, C extends Context>({
+function TableItem({
   data,
   context,
   cols,
-}: MobileTableItemProps<OrderEntity, Context>) {
+}: TableItemProps<OrderEntity, Context>) {
   return (
-    <div className="grid grid-cols-1 gap-2">
-      {cols.map((elem, idx) => {
-        const isApproveButton = elem.key === 'approveButton';
+    <tr
+      className={cn(
+        'grid grid-cols-1 gap-1 py-2 justify-center md:table-row',
+        'border-b border-[var(--gray-100)] last:border-0',
+      )}
+    >
+      {cols.map((col, idx) => {
+        const Render = () => {
+          switch (col.key) {
+            case 'nomer-zakaza':
+            case 'manager':
+            case 'price':
+              return (
+                <div>
+                  <div className="inline-block md:hidden">{col.label}:</div>{' '}
+                  <b>{data[col.key]}</b>
+                </div>
+              );
+            case 'startDate':
+            case 'authorDate':
+              return (
+                <div>
+                  <div className="inline-block md:hidden">{col.label}:</div>{' '}
+                  <b>{moment(data[col.key]).format('DD.MM.YYYY')}</b>
+                </div>
+              );
+            case 'payment.amount':
+              return (
+                <div>
+                  <div className="inline-block md:hidden">{col.label}:</div>{' '}
+                  <b>{data.payment?.amount}</b>
+                </div>
+              );
+            case 'payment.number':
+              return (
+                <div>
+                  <div className="inline-block md:hidden">{col.label}:</div>{' '}
+                  <b>
+                    {data.payment?.number &&
+                      {
+                        1: 'Перша оплата',
+                        2: 'Друга оплата',
+                        3: 'Третя оплата',
+                      }[data.payment.number]}
+                  </b>
+                </div>
+              );
+            case 'approveButton':
+              return (
+                <div className="flex mt-2 md:justify-end md:mt-0">
+                  <Button
+                    onClick={() =>
+                      context?.settings?.approval &&
+                      data.payment?.needApproval &&
+                      context?.handleOrderApprove(data.id)
+                    }
+                    disabled={
+                      !context?.settings?.approval ||
+                      !data.payment?.needApproval
+                    }
+                    variant={data.payment?.needApproval ? 'secondary' : 'green'}
+                    size="small"
+                    className="md:max-w-[10rem] w-full"
+                  >
+                    {data.payment?.needApproval
+                      ? 'Підтвердити'
+                      : 'Підтверджено'}
+                  </Button>
+                </div>
+              );
+            default:
+              throw new Error(`Unknown column key: "${col.key}"`);
+          }
+        };
+
         return (
-          <div
-            key={idx}
-            className={cn(
-              {
-                'flex justify-between': !isApproveButton,
-              },
-              ' border-b pb-1 border-[var(--gray-100)] last:border-b-0',
-            )}
-          >
-            <div>{elem.label}</div>
-            <div className="font-semibold">
-              {elem.render(data, context) || '-'}
-            </div>
-          </div>
+          <td key={idx} className="md:py-1 ">
+            <Render />
+          </td>
         );
       })}
-    </div>
+    </tr>
   );
 }
 
 const colsPending: Array<TableColCell<OrderEntity, Context>> = [
   {
-    key: 'number',
+    key: 'nomer-zakaza',
     label: 'Номер замовлення',
-    render: (data) => data['nomer-zakaza'],
   },
   {
+    key: 'manager',
     label: 'Менеджер',
-    render: ({ manager }) => manager,
   },
   {
+    key: 'price',
     label: 'Загальна ціна',
-    render: ({ price }) => price,
   },
   {
+    key: 'payment.amount',
     label: 'Наступна оплата',
-    render: ({ payment }) => payment?.amount,
   },
   {
+    key: 'payment.number',
     label: 'Тип оплати',
-    render: ({ payment }) =>
-      payment?.number &&
-      {
-        1: 'Перша оплата',
-        2: 'Друга оплата',
-        3: 'Третя оплата',
-      }[payment.number],
   },
   {
     label: null,
     key: 'approveButton',
-    render: ({ payment, id }, context) => (
-      <div className="flex mt-2 md:justify-end md:mt-0">
-        <Button
-          onClick={() =>
-            context?.settings?.approval &&
-            payment?.needApproval &&
-            context?.handleOrderApprove(id)
-          }
-          disabled={!context?.settings?.approval || !payment?.needApproval}
-          variant={payment?.needApproval ? 'secondary' : 'green'}
-          size="small"
-          className="md:max-w-[10rem] w-full"
-        >
-          {payment?.needApproval ? 'Підтвердити' : 'Підтверджено'}
-        </Button>
-      </div>
-    ),
   },
 ];
 
 const colsInProgress: Array<TableColCell<OrderEntity, Context>> = [
   {
     label: 'Номер замовлення',
-    render: (data) => data['nomer-zakaza'],
+    key: 'nomer-zakaza',
   },
   {
     label: 'Менеджер',
-    render: ({ manager }) => manager,
+    key: 'manager',
   },
   {
     label: 'Дата закріпки',
-    render: ({ startDate }) => moment(startDate).format('DD.MM.YYYY'),
+    key: 'startDate',
   },
   {
     label: 'Дата здачі',
-    render: ({ authorDate }) => moment(authorDate).format('DD.MM.YYYY'),
+    key: 'authorDate',
   },
 ];
 
 const colsPaid: Array<TableColCell<OrderEntity, Context>> = [
   {
     label: 'Номер замовлення',
-    render: (data) => data['nomer-zakaza'],
+    key: 'nomer-zakaza',
   },
   {
     label: 'Менеджер',
-    render: ({ manager }) => manager,
+    key: 'manager',
   },
   {
     label: 'Загальна ціна',
-    render: ({ price }) => price,
+    key: 'price',
   },
   {
     label: 'Дата завершення',
-    render: ({ authorDate }) => moment(authorDate).format('DD.MM.YYYY'),
+    key: 'authorDate',
   },
 ];

@@ -8,6 +8,7 @@ export type AdminStatsItem = {
   total: number;
   waitingForApproval: number;
   waitingForPayment: number;
+  orders: Array<OrderEntity>;
 };
 
 export type GetAdminStatsInput = {};
