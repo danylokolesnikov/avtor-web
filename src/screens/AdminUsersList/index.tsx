@@ -150,18 +150,24 @@ function TableItem<T extends AdminStatsItem, C extends TableContext>({
       {open && (
         <tr className="border-y border-[var(--gray-100)] last:border-0">
           <td colSpan={cols.length} className="grid md:table-cell py-2">
-            {data.orders.map((elem, idx) => (
-              <div
-                key={idx}
-                className="grid grid-cols-[20px_2fr_1fr] gap-4 even:bg-gray-100"
-              >
-                <div>{idx + 1}.</div>
-                <div>
-                  <b>{elem['nomer-zakaza']}</b> ({elem.status})
+            {data.orders.map((elem, idx) => {
+              if (elem.payment?.needApproval) {
+                return;
+              }
+
+              return (
+                <div
+                  key={idx}
+                  className="grid grid-cols-[20px_2fr_1fr] gap-4 even:bg-gray-100"
+                >
+                  <div>{idx + 1}.</div>
+                  <div>
+                    <b>{elem['nomer-zakaza']}</b> ({elem.status})
+                  </div>
+                  <div className="text-end">{elem.payment?.amount} грн</div>
                 </div>
-                <div className="text-end">{elem.payment?.amount} грн</div>
-              </div>
-            ))}
+              );
+            })}
           </td>
         </tr>
       )}
@@ -194,15 +200,22 @@ export function exportToExcel(
     rows.push({
       'Автор / Замовлення': item.name.trim(),
       'Ціна замовлення': '',
-      'Загальна сума': item.total,
+      'Загальна сума': item.orders
+        .reduce((acc, v) => {
+          acc += v.payment?.amount ?? 0;
+          return acc;
+        }, 0)
+        .toFixed(2),
     });
 
     item.orders.forEach((order) => {
-      rows.push({
-        'Автор / Замовлення': `   ${order['nomer-zakaza']}`,
-        'Ціна замовлення': order.payment?.amount,
-        'Загальна сума': '',
-      });
+      if (!order.payment?.needApproval) {
+        rows.push({
+          'Автор / Замовлення': `   ${order['nomer-zakaza']}`,
+          'Ціна замовлення': order.payment?.amount,
+          'Загальна сума': '',
+        });
+      }
     });
 
     rows.push({});
