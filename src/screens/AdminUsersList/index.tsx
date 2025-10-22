@@ -98,6 +98,14 @@ function TableItem<T extends AdminStatsItem, C extends TableContext>({
 }: TableItemProps<T, C>) {
   const [open, setOpen] = useState(false);
 
+  const filteredOrders = data.orders.filter((e) => !e.payment?.needApproval);
+  const total = filteredOrders
+    .reduce((acc, v) => {
+      acc += v.payment?.amount ?? 0;
+      return acc;
+    }, 0)
+    .toFixed(2);
+
   return (
     <>
       <tr
@@ -120,7 +128,7 @@ function TableItem<T extends AdminStatsItem, C extends TableContext>({
                 return (
                   <div>
                     <div className="inline-block  md:hidden">{col.label}:</div>{' '}
-                    <b>{data.total} грн</b>
+                    <b>{total} грн</b>
                   </div>
                 );
               case 'orders':
@@ -150,11 +158,7 @@ function TableItem<T extends AdminStatsItem, C extends TableContext>({
       {open && (
         <tr className="border-y border-[var(--gray-100)] last:border-0">
           <td colSpan={cols.length} className="grid md:table-cell py-2">
-            {data.orders.map((elem, idx) => {
-              if (elem.payment?.needApproval) {
-                return;
-              }
-
+            {filteredOrders.map((elem, idx) => {
               return (
                 <div
                   key={idx}
@@ -197,25 +201,26 @@ export function exportToExcel(
   const rows: any[] = [];
 
   data.forEach((item) => {
+    const filteredOrders = item.orders.filter((e) => !e.payment?.needApproval);
+    const total = filteredOrders
+      .reduce((acc, v) => {
+        acc += v.payment?.amount ?? 0;
+        return acc;
+      }, 0)
+      .toFixed(2);
+
     rows.push({
       'Автор / Замовлення': item.name.trim(),
       'Ціна замовлення': '',
-      'Загальна сума': item.orders
-        .reduce((acc, v) => {
-          acc += v.payment?.amount ?? 0;
-          return acc;
-        }, 0)
-        .toFixed(2),
+      'Загальна сума': total,
     });
 
-    item.orders.forEach((order) => {
-      if (!order.payment?.needApproval) {
-        rows.push({
-          'Автор / Замовлення': `   ${order['nomer-zakaza']}`,
-          'Ціна замовлення': order.payment?.amount,
-          'Загальна сума': '',
-        });
-      }
+    filteredOrders.forEach((order) => {
+      rows.push({
+        'Автор / Замовлення': `   ${order['nomer-zakaza']}`,
+        'Ціна замовлення': order.payment?.amount,
+        'Загальна сума': '',
+      });
     });
 
     rows.push({});
